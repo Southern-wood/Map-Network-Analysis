@@ -3,4 +3,7 @@ project(map)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(map main.cpp Graph.h)
+add_executable(map main.cpp Graph.h
+        Graph.cpp
+        Login.cpp
+        Login.h)
