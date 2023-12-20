@@ -29,13 +29,19 @@ int main() {
   Graph graph;
   graph.init();
 
-  std::string cityA, cityB;
+  std::string cityA, cityB, city;
   int distance;
 
   int choice;
   do {
     Menu::displayMenu();
-    std::cin >> choice;
+    choice = 0;
+    while (!(std::cin >> choice)) {   // 如果输入类型不匹配，则执行循环体
+      std::cin.clear();               // reset input 设置标志位为有效
+      while (std::cin.get() != '\n')  // 删除没有用的输入
+        continue;
+      std::cout << "非法输入，请输入一个数字：";
+    }
 
     switch (choice) {
       case 1:
@@ -43,86 +49,52 @@ int main() {
         graph.print();
         break;
       case 2:
-        // 添加节点
-        // ...
-        std::cout << "添加节点功能尚未实现。" << std::endl;
+        std::cout << "请输入城市：";
+        std::cin >> city;
+        graph.addCity(city);
+        system("pause");
         break;
       case 3:
-        // 删除节点
-        // ...
-        std::cout << "删除节点功能尚未实现。" << std::endl;
+        std::cout << "请输入城市：";
+        std::cin >> city;
+        graph.removeCity(city);
+        system("pause");
         break;
       case 4:
-        std::cout << "请输入道路两端的城市和道路的长度：" << std::endl;
-        std::cin >> cityA >> cityB >> distance;
-        if (distance <= 0) {
-          std::cout << "距离非法" << std::endl;
-        } else {
-          graph.addRoad(cityA, cityB, distance);
+        std::cout << "请输入道路两端的城市和道路的长度：";
+        while (std::cin >> cityA >> cityB >> distance) {
+          if (distance <= 0) {
+            std::cout << "距离非法，请重新输入：" << std::endl;
+          } else {
+            graph.addRoad(cityA, cityB, distance);
+            break;
+          }
         }
         system("pause");
         break;
       case 5:
-        // 删除边
-        // ...
-        std::cout << "删除边功能尚未实现。" << std::endl;
+        std::cout << "请输入两座城市：";
+        std::cin >> cityA >> cityB;
+        graph.removeRoad(cityA, cityB);
+        system("pause");
         break;
       case 6:
-        // 查找特定节点的邻近节点
-        // ...
-        std::cout << "查找特定节点的邻近节点功能尚未实现。" << std::endl;
+        std::cout << "请输入城市名：";
+        std::cin >> city;
+        graph.printNeighbours(city);
+        system("pause");
         break;
       case 7:
-        // 查找两个节点之间的最短路径
-        // ...
-        std::cout << "查找两个节点之间的最短路径功能尚未实现。" << std::endl;
+        std::cout << "请输入起始城市和结束城市：";
+        std::cin >> cityA >> cityB;
+        graph.dijkstraShortestPath(cityA, cityB);
+        system("pause");
         break;
       case 8:
-        std::cout << "退出地图导航系统。" << std::endl;
         break;
       default:
         std::cout << "无效的选项，请重新输入（1-8）。" << std::endl;
+        system("pause");
     }
   } while (choice != 8);
-
-
-
-
-  // 添加城市节点
-  graph.addCity("北京");
-  graph.addCity("上海");
-  graph.addCity("广州");
-  graph.addCity("深圳");
-  graph.addCity("成都");
-
-  // 添加城市间的道路及距离
-  graph.addRoad("北京", "上海", 1200);
-  //graph.addRoad("北京", "广州", 1800);
-  graph.addRoad("上海", "深圳", 1500);
-  //graph.addRoad("广州", "深圳", 1000);
-  graph.addRoad("北京", "成都", 20000);
-  graph.addRoad("上海", "成都", 1700);
-  //graph.addRoad("广州", "成都", 1600);
-  graph.addRoad("深圳", "成都", 1400);
-
-  // 计算最短路径
-  //std::vector<std::string> shortestPath = graph.dijkstraShortestPath("北京", "成都");
-  PathInfo shortestPathInfo = graph.dijkstraShortestPath("北京", "成都");
-
-
-  // 输出最短路径
-  std::cout << "最短路径为：" << std::endl;
-  //std::wcout << L"从" << startCity << L"到" << endCity << L"的最短路径为：" << std::endl;
-  for (size_t i = 0; i < shortestPathInfo.path.size(); ++i) {
-    std::cout << shortestPathInfo.path[i];
-    if (i < shortestPathInfo.distances.size()) {
-      std::cout << " (" << shortestPathInfo.distances[i] << " km)";
-    }
-    if (i != shortestPathInfo.path.size() - 1) std::cout << " -> ";
-  }
-  std::cout << std::endl;
-  std::cout << "总长度为：" << shortestPathInfo.totalDistance << " km" << std::endl;
-  std::cout << std::endl;
-
-  return 0;
 }

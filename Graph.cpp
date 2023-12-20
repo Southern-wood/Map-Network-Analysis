@@ -6,7 +6,6 @@
 
 void Graph::init() {
   std::ifstream file("E:/C++/map/mapInformation.txt");
-  if (file.is_open()) std::cout << "open OK" << std::endl;
   std::string cityA, cityB;
   int distance;
   while (file >> cityA >> cityB >> distance) {
@@ -16,12 +15,30 @@ void Graph::init() {
   }
 }
 
+Graph::~Graph() {
+  std::ofstream  file("E:/C++/map/mapInformation.txt");
+
+  for (int i = 0; i < cities.size(); i++) {
+    for (auto const& edge : adjacencyList[i]) {
+       if (edge.first > i) {
+         file << indexCity[i] << " " << indexCity[edge.first] << " " << edge.second << std::endl;
+       }
+    }
+  }
+  file.close();
+}
+
 void Graph::addCity(const std::string& cityName) {
-  cities.emplace_back(cityName);
-  int index = cities.size() - 1; // 新城市的索引
-  cityIndices[cityName] = index; // 存储城市名称和其索引的映射关系
-  indexCity[index] = cityName;
-  adjacencyList.emplace_back();
+  if (!cityIndices.count(cityName)) {
+    cities.emplace_back(cityName);
+    int index = cities.size() - 1; // 新城市的索引
+    cityIndices[cityName] = index; // 存储城市名称和其索引的映射关系
+    indexCity[index] = cityName;
+    adjacencyList.emplace_back();
+    std::cout << cityName << "添加成功" << std::endl;
+  } else {
+    std::cout << "该城市已存在" << std::endl;
+  }
 }
 
 void Graph::removeCity(const std::string& cityName) {
@@ -44,14 +61,18 @@ void Graph::removeCity(const std::string& cityName) {
     for (auto& list : adjacencyList) {
       for (auto it = list.begin(); it != list.end(); it++) {
         if (it->first == index) {
-          list.erase(it);
-        }
-        if (it->first > index) {
+          auto ptr = it--;
+          list.erase(ptr);
+        } else if (it->first > index) {
           it->first--; // 减小索引以保持正确性
         }
       }
     }
+    std::cout << "城市 " << cityName << " 及其相连的道路已被移除" << std::endl;
+  } else {
+    std::cout << "找不到城市 " << cityName << std::endl;
   }
+
 }
 
 void Graph::addRoad(const std::string& cityA, const std::string& cityB, int distance) {
@@ -82,6 +103,9 @@ void Graph::removeRoad(const std::string& cityA, const std::string& cityB) {
     adjacencyList[indexB].remove_if([indexA](std::pair<int, int> element) {
       return element.first == indexA;
     });
+    std::cout << "城市 " << cityA << " 与城市 " << cityB << " 之间的道路已被移除" << std::endl;
+  } else {
+    std::cout << "城市不存在" << std::endl;
   }
 }
 // 其他方法的实现
@@ -205,5 +229,16 @@ void Graph::printAdjacencyList() {
     std::cout << std::endl;
   }
   system("pause");
+}
+
+void Graph::printNeighbours(const std::string& cityName) {
+  if (!cityIndices.count(cityName)) {
+    std::cout << "城市不存在" << std::endl;
+  } else {
+    for (const auto& neighbour : adjacencyList[cityIndices[cityName]]) {
+      std::cout << indexCity[neighbour.first] << " ";
+    }
+    std::cout << std::endl;
+  }
 }
 

@@ -25,6 +25,7 @@ private:
 
 public:
   Graph() = default;
+  ~Graph();
   void init();
   void addCity(const std::string& cityName);
   void removeCity(const std::string& cityName);
@@ -33,7 +34,8 @@ public:
   PathInfo dijkstraShortestPath(const std::string &startCity, const std::string &endCity);
   void print();
   void printAdjacencyMatrix();
-  void printAdjacencyList() ;
+  void printAdjacencyList();
+  void printNeighbours(const std::string& cityName);
 };
 
 #endif
