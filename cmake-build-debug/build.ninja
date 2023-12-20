@@ -61,6 +61,18 @@ build CMakeFiles/map.dir/Graph.cpp.obj: CXX_COMPILER__map_Debug E$:/C++/map/Grap
   OBJECT_DIR = CMakeFiles\map.dir
   OBJECT_FILE_DIR = CMakeFiles\map.dir
 
+build CMakeFiles/map.dir/Login.cpp.obj: CXX_COMPILER__map_Debug E$:/C++/map/Login.cpp || cmake_object_order_depends_target_map
+  DEP_FILE = CMakeFiles\map.dir\Login.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\map.dir
+  OBJECT_FILE_DIR = CMakeFiles\map.dir
+
+build CMakeFiles/map.dir/Menu.cpp.obj: CXX_COMPILER__map_Debug E$:/C++/map/Menu.cpp || cmake_object_order_depends_target_map
+  DEP_FILE = CMakeFiles\map.dir\Menu.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\map.dir
+  OBJECT_FILE_DIR = CMakeFiles\map.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target map
@@ -69,7 +81,7 @@ build CMakeFiles/map.dir/Graph.cpp.obj: CXX_COMPILER__map_Debug E$:/C++/map/Grap
 #############################################
 # Link the executable map.exe
 
-build map.exe: CXX_EXECUTABLE_LINKER__map_Debug CMakeFiles/map.dir/main.cpp.obj CMakeFiles/map.dir/Graph.cpp.obj
+build map.exe: CXX_EXECUTABLE_LINKER__map_Debug CMakeFiles/map.dir/main.cpp.obj CMakeFiles/map.dir/Graph.cpp.obj CMakeFiles/map.dir/Login.cpp.obj CMakeFiles/map.dir/Menu.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\map.dir

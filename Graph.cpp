@@ -1,31 +1,53 @@
 #include "Graph.h"
 #include <algorithm>
+#include <fstream>
+#include <iomanip>
+#include <set>
+
+void Graph::init() {
+  std::ifstream file("E:/C++/map/mapInformation.txt");
+  if (file.is_open()) std::cout << "open OK" << std::endl;
+  std::string cityA, cityB;
+  int distance;
+  while (file >> cityA >> cityB >> distance) {
+    if (!cityIndices.count(cityA)) addCity(cityA);
+    if (!cityIndices.count(cityB)) addCity(cityB);
+    addRoad(cityA, cityB, distance);
+  }
+}
 
 void Graph::addCity(const std::string& cityName) {
   cities.emplace_back(cityName);
-  int index = cities.size() - 1; // æ–°åŸŽå¸‚çš„ç´¢å¼•
-  cityIndices[cityName] = index; // å­˜å‚¨åŸŽå¸‚åç§°å’Œå…¶ç´¢å¼•çš„æ˜ å°„å…³ç³»
+  int index = cities.size() - 1; // ÐÂ³ÇÊÐµÄË÷Òý
+  cityIndices[cityName] = index; // ´æ´¢³ÇÊÐÃû³ÆºÍÆäË÷ÒýµÄÓ³Éä¹ØÏµ
+  indexCity[index] = cityName;
   adjacencyList.emplace_back();
 }
 
 void Graph::removeCity(const std::string& cityName) {
   auto it = cityIndices.find(cityName);
   if (it != cityIndices.end()) {
-    int index = it->second; // è¦åˆ é™¤çš„åŸŽå¸‚åœ¨ cities ä¸­çš„ç´¢å¼•
-    cities.erase(cities.begin() + index); // åˆ é™¤åŸŽå¸‚
-    cityIndices.erase(it); // åˆ é™¤åŸŽå¸‚åç§°å’Œç´¢å¼•çš„æ˜ å°„å…³ç³»
-    adjacencyList.erase(adjacencyList.begin() + index); // åˆ é™¤é‚»æŽ¥è¡¨ä¸­çš„ç›¸å…³è¾¹
-    // æ›´æ–°å…¶ä»–åŸŽå¸‚çš„ç´¢å¼•ä¿¡æ¯
+    int index = it->second; // ÒªÉ¾³ýµÄ³ÇÊÐÔÚ cities ÖÐµÄË÷Òý
+    auto indexCityIt = indexCity.find(index);
+    cities.erase(cities.begin() + index); // É¾³ý³ÇÊÐ
+    cityIndices.erase(it); // É¾³ý³ÇÊÐÃû³ÆºÍË÷ÒýµÄÓ³Éä¹ØÏµ
+    indexCity.erase(indexCityIt);
+    adjacencyList.erase(adjacencyList.begin() + index); // É¾³ýÁÚ½Ó±íÖÐµÄÏà¹Ø±ß
+    // ¸üÐÂÆäËû³ÇÊÐµÄË÷ÒýÐÅÏ¢
     for (auto& pair : cityIndices) {
       if (pair.second > index) {
-        pair.second--; // å‡å°ç´¢å¼•ä»¥ä¿æŒæ­£ç¡®æ€§
+        pair.second--; // ¼õÐ¡Ë÷ÒýÒÔ±£³ÖÕýÈ·ÐÔ
+        indexCity[pair.second] = pair.first;
       }
     }
-    // åœ¨é‚»æŽ¥è¡¨ä¸­æ›´æ–°å…¶ä»–åŸŽå¸‚çš„è¾¹ä¿¡æ¯
+    // ÔÚÁÚ½Ó±íÖÐ¸üÐÂÆäËû³ÇÊÐµÄ±ßÐÅÏ¢
     for (auto& list : adjacencyList) {
-      for (auto& edge : list) {
-        if (edge.first > index) {
-          edge.first--; // å‡å°ç´¢å¼•ä»¥ä¿æŒæ­£ç¡®æ€§
+      for (auto it = list.begin(); it != list.end(); it++) {
+        if (it->first == index) {
+          list.erase(it);
+        }
+        if (it->first > index) {
+          it->first--; // ¼õÐ¡Ë÷ÒýÒÔ±£³ÖÕýÈ·ÐÔ
         }
       }
     }
@@ -35,12 +57,17 @@ void Graph::removeCity(const std::string& cityName) {
 void Graph::addRoad(const std::string& cityA, const std::string& cityB, int distance) {
   auto itA = cityIndices.find(cityA);
   auto itB = cityIndices.find(cityB);
-  if (itA != cityIndices.end() && itB != cityIndices.end()) {
+  if (itA == itB) {
+    std::cout << "±¾ÏµÍ³²»ÔÊÐí½¨Á¢×Ô»·" << std::endl;
+  } else if (itA != cityIndices.end() && itB != cityIndices.end()) {
     int indexA = itA->second;
     int indexB = itB->second;
     adjacencyList[indexA].emplace_back(std::make_pair(indexB, distance));
     adjacencyList[indexB].emplace_back(std::make_pair(indexA, distance));
+  } else {
+    std::cout << "³ÇÊÐ²»´æÔÚ" << std::endl;
   }
+
 }
 
 void Graph::removeRoad(const std::string& cityA, const std::string& cityB) {
@@ -57,7 +84,7 @@ void Graph::removeRoad(const std::string& cityA, const std::string& cityB) {
     });
   }
 }
-// å…¶ä»–æ–¹æ³•çš„å®žçŽ°
+// ÆäËû·½·¨µÄÊµÏÖ
 
 PathInfo Graph::dijkstraShortestPath(const std::string& startCity, const std::string& endCity) {
   // ...
@@ -124,4 +151,59 @@ PathInfo Graph::dijkstraShortestPath(const std::string& startCity, const std::st
   return { shortestPath, distances, totalDistance };
 }
 
+void Graph::print() {
+  int flag;
+  do {
+    std::cin >> flag;
+    if (flag == 1) {
+      printAdjacencyList();
+    } else if (flag == 2) {
+      printAdjacencyMatrix();
+    } else if (flag == 3) {
+      break;
+    } else {
+      std::cout << "·Ç·¨Ñ¡Ïî£¬ÇëÖØÐÂÑ¡Ôñ" << std::endl;
+    }
+  } while (flag != 1 && flag != 2);
+}
+
+void Graph::printAdjacencyMatrix() {
+  const int INF = 1e9;
+  system("cls");
+  std::cout << "ÁÚ½Ó¾ØÕó£º" << std::endl;
+  std::cout << std::setw(5) << " ";
+  for (auto& cityName : cities) {
+    std::cout << std::setw(5) << cityName << " ";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < cities.size(); ++i) {
+    std::cout << std::setw(5) << indexCity[i];
+    std::vector<int> distance(cities.size(), INF);
+    for (auto& edge : adjacencyList[i]) {
+      distance[edge.first] = std::min(distance[edge.first], edge.second);
+    }
+    for (int j = 0; j < cities.size(); j++) {
+      std::cout << std::setw(5) << (distance[j] == INF ? 0 : distance[j]) << " ";
+    }
+    std::cout << std::endl;
+  }
+  system("pause");
+}
+
+void Graph::printAdjacencyList() {
+  system("cls");
+  std::cout << "ÁÚ½Ó±í£º" << std::endl;
+  for (size_t i = 0; i < adjacencyList.size(); ++i) {
+    std::cout << indexCity[i] << " -> ";
+    std::set<std::string> neighbors;
+    for (const auto& neighbor : adjacencyList[i]) {
+      neighbors.insert(indexCity[neighbor.first]);
+    }
+    for (auto& cityName : neighbors) {
+      std::cout << cityName << " ";
+    }
+    std::cout << std::endl;
+  }
+  system("pause");
+}
 

@@ -1,54 +1,118 @@
 #include <iostream>
 #include "Graph.h"
 #include "Login.h"
+#include "Menu.h"
 
 int main() {
-  LoginModule loginModule;
+  LoginModule::printLoginScreen();
 
   std::string username, password;
 
-  std::cout << "è¯·è¾“å…¥ç”¨æˆ·åï¼š";
+  std::cout << "ÇëÊäÈëÓÃ»§Ãû£º";
   std::cin >> username;
 
-  std::cout << "è¯·è¾“å…¥å¯†ç ï¼š";
+  std::cout << "ÇëÊäÈëÃÜÂë£º";
   std::cin >> password;
 
-  if (LoginModule::authenticateUser(username, password)) {
-    std::cout << "ç™»å½•æˆåŠŸï¼æ¬¢è¿è¿›å…¥åœ°å›¾å¯¼èˆªç³»ç»Ÿã€‚" << std::endl;
-    // åœ¨è¿™é‡Œè°ƒç”¨ä½ çš„åœ°å›¾å¯¼èˆªç³»ç»ŸåŠŸèƒ½
-  } else {
-    std::cout << "ç™»å½•å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç”¨æˆ·åå’Œå¯†ç ã€‚" << std::endl;
+  if (!LoginModule::authenticateUser(username, password)) {
+    std::cout << "µÇÂ¼Ê§°Ü£¬Çë¼ì²éÓÃ»§ÃûºÍÃÜÂë¡£" << std::endl;
     return 0;
   }
 
+  std::cout.flush();
+  system("cls");
+
+  std::cout << "µÇÂ¼³É¹¦£¡»¶Ó­Ê¹ÓÃµØÍ¼µ¼º½ÏµÍ³" << std::endl;
+
+  // -------------- µÇÂ¼Ä£¿é½áÊø ---------------
 
   Graph graph;
+  graph.init();
 
-  // æ·»åŠ åŸå¸‚èŠ‚ç‚¹
-  graph.addCity("åŒ—äº¬");
-  graph.addCity("ä¸Šæµ·");
-  graph.addCity("å¹¿å·");
-  graph.addCity("æ·±åœ³");
-  graph.addCity("æˆéƒ½");
+  std::string cityA, cityB;
+  int distance;
 
-  // æ·»åŠ åŸå¸‚é—´çš„é“è·¯åŠè·ç¦»
-  graph.addRoad("åŒ—äº¬", "ä¸Šæµ·", 1200);
-  //graph.addRoad("åŒ—äº¬", "å¹¿å·", 1800);
-  graph.addRoad("ä¸Šæµ·", "æ·±åœ³", 1500);
-  //graph.addRoad("å¹¿å·", "æ·±åœ³", 1000);
-  graph.addRoad("åŒ—äº¬", "æˆéƒ½", 20000);
-  graph.addRoad("ä¸Šæµ·", "æˆéƒ½", 1700);
-  //graph.addRoad("å¹¿å·", "æˆéƒ½", 1600);
-  graph.addRoad("æ·±åœ³", "æˆéƒ½", 1400);
+  int choice;
+  do {
+    Menu::displayMenu();
+    std::cin >> choice;
 
-  // è®¡ç®—æœ€çŸ­è·¯å¾„
-  //std::vector<std::string> shortestPath = graph.dijkstraShortestPath("åŒ—äº¬", "æˆéƒ½");
-  PathInfo shortestPathInfo = graph.dijkstraShortestPath("åŒ—äº¬", "æˆéƒ½");
+    switch (choice) {
+      case 1:
+        Menu::displaySubmenuPrint();
+        graph.print();
+        break;
+      case 2:
+        // Ìí¼Ó½Úµã
+        // ...
+        std::cout << "Ìí¼Ó½Úµã¹¦ÄÜÉĞÎ´ÊµÏÖ¡£" << std::endl;
+        break;
+      case 3:
+        // É¾³ı½Úµã
+        // ...
+        std::cout << "É¾³ı½Úµã¹¦ÄÜÉĞÎ´ÊµÏÖ¡£" << std::endl;
+        break;
+      case 4:
+        std::cout << "ÇëÊäÈëµÀÂ·Á½¶ËµÄ³ÇÊĞºÍµÀÂ·µÄ³¤¶È£º" << std::endl;
+        std::cin >> cityA >> cityB >> distance;
+        if (distance <= 0) {
+          std::cout << "¾àÀë·Ç·¨" << std::endl;
+        } else {
+          graph.addRoad(cityA, cityB, distance);
+        }
+        system("pause");
+        break;
+      case 5:
+        // É¾³ı±ß
+        // ...
+        std::cout << "É¾³ı±ß¹¦ÄÜÉĞÎ´ÊµÏÖ¡£" << std::endl;
+        break;
+      case 6:
+        // ²éÕÒÌØ¶¨½ÚµãµÄÁÚ½ü½Úµã
+        // ...
+        std::cout << "²éÕÒÌØ¶¨½ÚµãµÄÁÚ½ü½Úµã¹¦ÄÜÉĞÎ´ÊµÏÖ¡£" << std::endl;
+        break;
+      case 7:
+        // ²éÕÒÁ½¸ö½ÚµãÖ®¼äµÄ×î¶ÌÂ·¾¶
+        // ...
+        std::cout << "²éÕÒÁ½¸ö½ÚµãÖ®¼äµÄ×î¶ÌÂ·¾¶¹¦ÄÜÉĞÎ´ÊµÏÖ¡£" << std::endl;
+        break;
+      case 8:
+        std::cout << "ÍË³öµØÍ¼µ¼º½ÏµÍ³¡£" << std::endl;
+        break;
+      default:
+        std::cout << "ÎŞĞ§µÄÑ¡Ïî£¬ÇëÖØĞÂÊäÈë£¨1-8£©¡£" << std::endl;
+    }
+  } while (choice != 8);
 
 
-  // è¾“å‡ºæœ€çŸ­è·¯å¾„
-  std::cout << "æœ€çŸ­è·¯å¾„ä¸ºï¼š" << std::endl;
-  //std::wcout << L"ä»" << startCity << L"åˆ°" << endCity << L"çš„æœ€çŸ­è·¯å¾„ä¸ºï¼š" << std::endl;
+
+
+  // Ìí¼Ó³ÇÊĞ½Úµã
+  graph.addCity("±±¾©");
+  graph.addCity("ÉÏº£");
+  graph.addCity("¹ãÖİ");
+  graph.addCity("ÉîÛÚ");
+  graph.addCity("³É¶¼");
+
+  // Ìí¼Ó³ÇÊĞ¼äµÄµÀÂ·¼°¾àÀë
+  graph.addRoad("±±¾©", "ÉÏº£", 1200);
+  //graph.addRoad("±±¾©", "¹ãÖİ", 1800);
+  graph.addRoad("ÉÏº£", "ÉîÛÚ", 1500);
+  //graph.addRoad("¹ãÖİ", "ÉîÛÚ", 1000);
+  graph.addRoad("±±¾©", "³É¶¼", 20000);
+  graph.addRoad("ÉÏº£", "³É¶¼", 1700);
+  //graph.addRoad("¹ãÖİ", "³É¶¼", 1600);
+  graph.addRoad("ÉîÛÚ", "³É¶¼", 1400);
+
+  // ¼ÆËã×î¶ÌÂ·¾¶
+  //std::vector<std::string> shortestPath = graph.dijkstraShortestPath("±±¾©", "³É¶¼");
+  PathInfo shortestPathInfo = graph.dijkstraShortestPath("±±¾©", "³É¶¼");
+
+
+  // Êä³ö×î¶ÌÂ·¾¶
+  std::cout << "×î¶ÌÂ·¾¶Îª£º" << std::endl;
+  //std::wcout << L"´Ó" << startCity << L"µ½" << endCity << L"µÄ×î¶ÌÂ·¾¶Îª£º" << std::endl;
   for (size_t i = 0; i < shortestPathInfo.path.size(); ++i) {
     std::cout << shortestPathInfo.path[i];
     if (i < shortestPathInfo.distances.size()) {
@@ -57,7 +121,7 @@ int main() {
     if (i != shortestPathInfo.path.size() - 1) std::cout << " -> ";
   }
   std::cout << std::endl;
-  std::cout << "æ€»é•¿åº¦ä¸ºï¼š" << shortestPathInfo.totalDistance << " km" << std::endl;
+  std::cout << "×Ü³¤¶ÈÎª£º" << shortestPathInfo.totalDistance << " km" << std::endl;
   std::cout << std::endl;
 
   return 0;
